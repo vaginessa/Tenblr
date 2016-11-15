@@ -27,7 +27,9 @@ public class SplashActivity extends AppCompatActivity {
                 boolean loggedIn = new PrefUtil(SplashActivity.this).getBooleanPref(Constants.LOGGED_IN,false);
                 if(loggedIn)
                 {
-
+                    Intent in = new Intent(SplashActivity.this,UserDashActivity.class);
+                    in.putExtra("login",true);
+                    startActivity(in);
                 }
                 else
                 {

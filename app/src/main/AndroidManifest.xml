@@ -21,6 +21,8 @@
         </intent-filter>
         </activity>
 
+        <activity android:name=".UI.UserDashActivity"/>
+
     </application>
 
     <!-- Permission - Internet Connect -->

@@ -24,28 +24,27 @@ import java.util.Set;
 
         public void setStringPref(String key, String value) {
             editor.putString(key, value);
-            commit();
 
         }
 
         public void setIntPref(String key, int value) {
             editor.putInt(key, value);
-            commit();
+
         }
 
         public void setBooleanPref(String key, boolean value) {
             editor.putBoolean(key, value);
-            commit();
+
         }
 
         public void setLongPref(String key, Long value) {
             editor.putLong(key, value);
-            commit();
+
         }
 
         public void setStringSetPref(String key, Set<String> value) {
             editor.putStringSet(key, value);
-            commit();
+
         }
 
         /**
