@@ -1,5 +1,7 @@
 package com.tenblr.bhargav.tenblr.API;
 
+import com.tenblr.bhargav.tenblr.Models.UserInfoResponse;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -10,6 +12,9 @@ import retrofit2.http.Path;
 
 public interface TumblrInterface {
 
-    @GET("blog/{blog}/posts/submission")
-    Call<SampleModel> getTopRatedMovies(@Path("blog") String blogName);
+    @GET("user/info")
+    Call<UserInfoResponse> getUserInfo();
+
+    @GET("blog/{blogname}/avatar")
+    Call<Void> getBlogAvatar(@Path("blogname") String blogname);
 }
