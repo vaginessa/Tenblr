@@ -1,11 +1,15 @@
 package com.tenblr.bhargav.tenblr.UI.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -49,9 +53,15 @@ public class OAuthLoginActivity extends AppCompatActivity {
     public void loadAuthWebView(String authUrl)
     {
 
+ /*       webView.clearCache(true);
+        webView.clearHistory();
+        webView.clearFormData();
+        clearCookies(this);*/
         if(oAuthVerifier ==null && oAuthToken ==null)
         {
             webView.getSettings().setJavaScriptEnabled(true);
+
+
 
             webView.setWebViewClient(new WebViewClient(){
                 @Override
@@ -92,6 +102,27 @@ public class OAuthLoginActivity extends AppCompatActivity {
         pref.setBooleanPref(Constants.LOGGED_IN,true);
         pref.commit();
         pref.setBooleanPref(Constants.LOGGED_IN,true);
+    }
+
+    @SuppressWarnings("deprecation")
+    public static void clearCookies(Context context)
+    {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+
+            CookieManager.getInstance().removeAllCookies(null);
+            CookieManager.getInstance().flush();
+        } else
+        {
+
+            CookieSyncManager cookieSyncMngr=CookieSyncManager.createInstance(context);
+            cookieSyncMngr.startSync();
+            CookieManager cookieManager=CookieManager.getInstance();
+            cookieManager.removeAllCookie();
+            cookieManager.removeSessionCookie();
+            cookieSyncMngr.stopSync();
+            cookieSyncMngr.sync();
+        }
     }
 
     class getAccessToken extends AsyncTask<Void,Void,Void>{

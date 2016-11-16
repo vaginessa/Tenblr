@@ -1,28 +1,26 @@
 package com.tenblr.bhargav.tenblr.UI.Activities;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.tenblr.bhargav.tenblr.API.TumblrInterface;
 import com.tenblr.bhargav.tenblr.API.TumblrService;
-import com.tenblr.bhargav.tenblr.Adapters.BlogListAdapter;
 import com.tenblr.bhargav.tenblr.Communicators.PostDashCommunicator;
 import com.tenblr.bhargav.tenblr.Model.DeleteResponse;
-import com.tenblr.bhargav.tenblr.Model.UserInfo.Blog;
-import com.tenblr.bhargav.tenblr.Model.UserInfo.User;
 import com.tenblr.bhargav.tenblr.R;
 import com.tenblr.bhargav.tenblr.UI.Fragments.BlogListFragment;
 import com.tenblr.bhargav.tenblr.UI.Fragments.PostListFragment;
 import com.tenblr.bhargav.tenblr.Utils.PrefUtil;
-
-import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,17 +32,14 @@ import retrofit2.Response;
 
 public class UserDashActivity extends AppCompatActivity {
 
-    RecyclerView rvBlogList;
-    LinearLayoutManager layoutManager;
     boolean loginSuccess;
     PrefUtil pref;
     private TumblrInterface api;
-    ArrayList<Blog> blogs = new ArrayList<>();
-    BlogListAdapter adapter;
-    User user = new User();
-    private boolean deleted = false;
     PostDashCommunicator comm;
     Toolbar toolbar;
+    LinearLayout viewLogin;
+    Button btnLogin;
+    FrameLayout blogView;
 
 
     @Override
@@ -53,23 +48,40 @@ public class UserDashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_dash);
         pref = new PrefUtil(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar_user_dash);
+        toolbar.setTitleTextColor(Color.parseColor("#ffffff"));
         setSupportActionBar(toolbar);
         loginSuccess = getIntent().getBooleanExtra("login",false);
+        blogView = (FrameLayout) findViewById(R.id.dash_frag_container);
+        viewLogin = (LinearLayout) findViewById(R.id.view_login_cont);
+        btnLogin = (Button) viewLogin.findViewById(R.id.btn_login);
 
-        if(!loginSuccess)
-            Toast.makeText(this, "Login to Continue Using App", Toast.LENGTH_SHORT).show();
+        if(!loginSuccess){
+            getSupportActionBar().setTitle("Login to Continue");
+            viewLogin.setVisibility(View.VISIBLE);
+            blogView.setVisibility(View.GONE);
+        }
         else{
             loadBlogList();
+            viewLogin.setVisibility(View.GONE);
+            blogView.setVisibility(View.VISIBLE);
+            api = TumblrService.getClient(UserDashActivity.this).create(TumblrInterface.class);
         }
 
-        api = TumblrService.getClient(UserDashActivity.this).create(TumblrInterface.class);
 
 
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent in = new Intent(UserDashActivity.this,OAuthLoginActivity.class);
+                startActivity(in);
+                finish();
+            }
+        });
     }
+
 
     public void loadBlogList()
     {
-//        setFragmentLayout(new BlogListFragment(),"BlogList");
         getSupportFragmentManager().beginTransaction().add(R.id.dash_frag_container,new BlogListFragment()).commit();
     }
 

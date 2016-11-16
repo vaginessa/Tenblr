@@ -25,7 +25,7 @@ public interface TumblrInterface {
     Call<Void> getBlogAvatar(@Path("blogname") String blogName);
 
     @GET("blog/{blogname}/posts")
-    Call<BlogInfoResponse> getPosts(@Path("blogname") String blogName, @Query("type") String type, @Query("filter") String filter);
+    Call<BlogInfoResponse> getPosts(@Path("blogname") String blogName, @Query("type") String type, @Query("filter") String filter,@Query("offset") int offset,@Query("limit") int limit);
 
     @POST("blog/{blogname}/post/delete")
     Call<DeleteResponse> deletePost(@Path("blogname") String blogName,@Query("id") String postId);

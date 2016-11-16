@@ -19,6 +19,7 @@ import com.tenblr.bhargav.tenblr.Model.UserInfo.UserInfoResponse;
 import com.tenblr.bhargav.tenblr.Model.UserInfo.Blog;
 import com.tenblr.bhargav.tenblr.Model.UserInfo.User;
 import com.tenblr.bhargav.tenblr.R;
+import com.tenblr.bhargav.tenblr.UI.Activities.UserDashActivity;
 
 import java.util.ArrayList;
 
@@ -54,6 +55,7 @@ public class BlogListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_blog_list,container,false);
+        ((UserDashActivity)getActivity()).getSupportActionBar().setTitle("My Blogs");
         initViews();
         bindViews();
         getUserData();
@@ -67,18 +69,22 @@ public class BlogListFragment extends Fragment {
         call.enqueue(new Callback<UserInfoResponse>() {
             @Override
             public void onResponse(Call<UserInfoResponse> call, Response<UserInfoResponse> response) {
-                user = response.body().getResponse().getUser();
-                blogs = user.getBlogs();
-                adapter.updateData(blogs);
-                welcomeMessage.setText("Welcome to Tenblr \n"+user.getName());
-                if(blogs.size()==0){
-                    emptyView.setVisibility(View.VISIBLE);
-                    rvBlogList.setVisibility(View.GONE);
+                if(response.code()==200)
+                {
+                    user = response.body().getResponse().getUser();
+                    blogs = user.getBlogs();
+                    adapter.updateData(blogs);
+                    welcomeMessage.setText("Welcome to Tenblr \n"+user.getName());
+                    if(blogs.size()==0){
+                        emptyView.setVisibility(View.VISIBLE);
+                        rvBlogList.setVisibility(View.GONE);
+                    }
+                    else{
+                        emptyView.setVisibility(View.GONE);
+                        rvBlogList.setVisibility(View.VISIBLE);
+                    }
                 }
-                else{
-                    emptyView.setVisibility(View.GONE);
-                    rvBlogList.setVisibility(View.VISIBLE);
-                }
+
 
             }
 

@@ -15,12 +15,14 @@ import android.widget.Toast;
 
 import com.tenblr.bhargav.tenblr.API.TumblrInterface;
 import com.tenblr.bhargav.tenblr.API.TumblrService;
+import com.tenblr.bhargav.tenblr.Adapters.EndlessRecyclerViewScrollListener;
 import com.tenblr.bhargav.tenblr.Adapters.PostListAdapter;
 import com.tenblr.bhargav.tenblr.Communicators.PostDashCommunicator;
 import com.tenblr.bhargav.tenblr.Model.BlogInfo.BlogInfoResponse;
 import com.tenblr.bhargav.tenblr.Model.BlogInfo.Post;
 import com.tenblr.bhargav.tenblr.R;
 import com.tenblr.bhargav.tenblr.UI.Activities.NewPostActivity;
+import com.tenblr.bhargav.tenblr.UI.Activities.UserDashActivity;
 
 import java.util.ArrayList;
 
@@ -44,7 +46,7 @@ public class PostListFragment extends Fragment implements PostDashCommunicator {
     boolean deleted = false;
     FloatingActionButton addPost;
     LinearLayout emptyView;
-
+    EndlessRecyclerViewScrollListener scrollListener;
 
 
     public static PostListFragment newInstance(String blogName)
@@ -68,39 +70,14 @@ public class PostListFragment extends Fragment implements PostDashCommunicator {
         rootView = inflater.inflate(R.layout.fragment_post_list,container,false);
         if(getArguments()!=null)
             blogName = getArguments().getString("blog");
+
+        ((UserDashActivity)getActivity()).getSupportActionBar().setTitle(blogName+":Blog Posts");
         initViews();
         bindViews();
-        getPostData(blogName);
+        getPostData(blogName,0);
         return rootView;
     }
 
-    public void getPostData(String blogName)
-    {
-        Call<BlogInfoResponse> call = api.getPosts(blogName+".tumblr.com","text","text");
-
-        call.enqueue(new Callback<BlogInfoResponse>() {
-            @Override
-            public void onResponse(Call<BlogInfoResponse> call, Response<BlogInfoResponse> response) {
-                posts = response.body().getResponse().getPosts();
-                adapter.updateData(posts);
-                if(posts.size()==0){
-                    emptyView.setVisibility(View.VISIBLE);
-                    rvPostList.setVisibility(View.GONE);
-                }
-                else{
-                    emptyView.setVisibility(View.GONE);
-                    rvPostList.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<BlogInfoResponse> call, Throwable t) {
-                emptyView.setVisibility(View.VISIBLE);
-                rvPostList.setVisibility(View.GONE);
-                Toast.makeText(getActivity(),"Error fetching Data", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
     private void initViews() {
         rvPostList = (RecyclerView) rootView.findViewById(R.id.rv_post_list);
@@ -108,6 +85,13 @@ public class PostListFragment extends Fragment implements PostDashCommunicator {
         adapter = new PostListAdapter(posts,getActivity());
         addPost = (FloatingActionButton) rootView.findViewById(R.id.fab_add_post);
         emptyView = (LinearLayout) rootView.findViewById(R.id.post_empty);
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                getPostData(blogName,page);
+            }
+
+        };
     }
 
     private void bindViews() {
@@ -123,30 +107,36 @@ public class PostListFragment extends Fragment implements PostDashCommunicator {
             }
         });
 
-        rvPostList.addOnScrollListener(new RecyclerView.OnScrollListener()
-        {
+        rvPostList.addOnScrollListener(scrollListener);
+    }
+
+    public void getPostData(String blogName,int page)
+    {
+        Call<BlogInfoResponse> call = api.getPosts(blogName+".tumblr.com","text","text",page*10,10);
+
+        call.enqueue(new Callback<BlogInfoResponse>() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
-            {
-                if (dy > 0 ||dy<0 && addPost.isShown())
-                {
-                    addPost.hide();
+            public void onResponse(Call<BlogInfoResponse> call, Response<BlogInfoResponse> response) {
+                posts.addAll(response.body().getResponse().getPosts());
+                if(posts.size()==0){
+                    emptyView.setVisibility(View.VISIBLE);
+                    rvPostList.setVisibility(View.GONE);
+                }
+                else{
+                    emptyView.setVisibility(View.GONE);
+                    rvPostList.setVisibility(View.VISIBLE);
+                    adapter.updateData(posts);
                 }
             }
 
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState)
-            {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE)
-                {
-                    addPost.show();
-                }
-
-                super.onScrollStateChanged(recyclerView, newState);
+            public void onFailure(Call<BlogInfoResponse> call, Throwable t) {
+                emptyView.setVisibility(View.VISIBLE);
+                rvPostList.setVisibility(View.GONE);
+                Toast.makeText(getActivity(),"Error fetching Data", Toast.LENGTH_SHORT).show();
             }
         });
     }
-
 
     @Override
     public void postDelete(boolean deleted) {
