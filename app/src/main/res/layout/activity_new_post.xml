@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_new_post"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="right|center_vertical">
+
+            <TextView
+                android:id="@+id/tv_make_post"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="POST"
+                android:textColor="#ffffff"
+                android:textAlignment="center"
+                android:padding="10dp"
+                />
+        </LinearLayout>
+
+
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <EditText
+        android:id="@+id/et_post_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.10"
+        android:hint="Post Title"
+        android:background="@null"/>
+
+    <EditText
+        android:id="@+id/et_post_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.70"
+        android:hint="Enter your Text Here"
+        android:gravity="top"
+        android:background="@null"/>
+
+    <EditText
+        android:id="@+id/et_post_tags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.10"
+        android:hint="Post Tags Seperated by Commas"
+        android:drawableLeft="@mipmap/hashtag"
+        android:drawablePadding="10dp"
+        android:background="@null"/>
+
+
+
+
+</LinearLayout>

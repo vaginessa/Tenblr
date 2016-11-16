@@ -1,13 +1,14 @@
-package com.tenblr.bhargav.tenblr.Models;
+package com.tenblr.bhargav.tenblr.Model.UserInfo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by bhargav on 15/11/16.
+ * Created by bhargav on 16/11/16.
  */
 
 public class UserInfoResponse {
+
     @SerializedName("meta")
     @Expose
     private Meta meta;

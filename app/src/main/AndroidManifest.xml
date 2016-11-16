@@ -9,11 +9,11 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UI.OAuthLoginActivity">
+        <activity android:name=".UI.Activities.OAuthLoginActivity">
 
         </activity>
 
-        <activity android:name=".UI.SplashActivity">
+        <activity android:name=".UI.Activities.SplashActivity">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
 
@@ -21,7 +21,9 @@
         </intent-filter>
         </activity>
 
-        <activity android:name=".UI.UserDashActivity"/>
+        <activity android:name=".UI.Activities.UserDashActivity"/>
+
+        <activity android:name=".UI.Activities.NewPostActivity"/>
 
     </application>
 

@@ -1,4 +1,4 @@
-package com.tenblr.bhargav.tenblr.UI;
+package com.tenblr.bhargav.tenblr.UI.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
