@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal">
+
+    <RadioGroup
+        android:id="@+id/state_radio_roup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checkedButton="@+id/radio_post_now"
+        >
+      <RadioButton
+          android:id="@id/radio_post_now"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Public Now"/>
+        <RadioButton
+          android:id="@+id/radio_draft"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Save as Draft"/>
+        <RadioButton
+          android:id="@+id/radio_queue"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Push in Queue"/>
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btn_state_cont"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Continue"
+        android:background="@color/colorPrimary"
+        android:textColor="#ffffff"
+        android:layout_marginTop="10dp"/>
+
+</LinearLayout>

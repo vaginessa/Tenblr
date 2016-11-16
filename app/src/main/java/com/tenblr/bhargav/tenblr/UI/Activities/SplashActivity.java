@@ -30,11 +30,13 @@ public class SplashActivity extends AppCompatActivity {
                     Intent in = new Intent(SplashActivity.this,UserDashActivity.class);
                     in.putExtra("login",true);
                     startActivity(in);
+                    finish();
                 }
                 else
                 {
                     Intent in = new Intent(SplashActivity.this,OAuthLoginActivity.class);
                     startActivity(in);
+                    finish();
                 }
             }
         },3000);

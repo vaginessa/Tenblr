@@ -122,6 +122,29 @@ public class PostListFragment extends Fragment implements PostDashCommunicator {
                 startActivity(in);
             }
         });
+
+        rvPostList.addOnScrollListener(new RecyclerView.OnScrollListener()
+        {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+            {
+                if (dy > 0 ||dy<0 && addPost.isShown())
+                {
+                    addPost.hide();
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState)
+            {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                {
+                    addPost.show();
+                }
+
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
     }
 
 

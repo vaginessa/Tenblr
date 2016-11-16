@@ -64,25 +64,13 @@ public class UserDashActivity extends AppCompatActivity {
 
         api = TumblrService.getClient(UserDashActivity.this).create(TumblrInterface.class);
 
-        /*     Call<Void> call = api.getBlogAvatar("bhargavav.tumblr.com");
-
-      call.enqueue(new Callback<Void>() {
-          @Override
-          public void onResponse(Call<Void> call, Response<Void> response) {
-              Log.v("Avatar",response.raw().request().url().toString());
-          }
-
-          @Override
-          public void onFailure(Call<Void> call, Throwable t) {
-
-          }
-      });*/
 
     }
 
     public void loadBlogList()
     {
-        setFragmentLayout(new BlogListFragment(),"BlogList");
+//        setFragmentLayout(new BlogListFragment(),"BlogList");
+        getSupportFragmentManager().beginTransaction().add(R.id.dash_frag_container,new BlogListFragment()).commit();
     }
 
     public void loadPostList(String blogName)

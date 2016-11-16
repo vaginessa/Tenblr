@@ -114,7 +114,7 @@ public class OAuthLoginActivity extends AppCompatActivity {
             Intent in = new Intent(OAuthLoginActivity.this,UserDashActivity.class);
             in.putExtra("login",true);
             startActivity(in);
-
+            finish();
         }
     }
 
