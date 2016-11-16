@@ -84,6 +84,7 @@ public class OAuthLoginActivity extends AppCompatActivity {
                         Intent in = new Intent(OAuthLoginActivity.this,UserDashActivity.class);
                         in.putExtra("login",false);
                         startActivity(in);
+                        finish();
                         return true;
                     }
                     return super.shouldOverrideUrlLoading(view, url);
