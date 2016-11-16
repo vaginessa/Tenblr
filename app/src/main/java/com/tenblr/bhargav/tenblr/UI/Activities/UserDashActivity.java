@@ -1,7 +1,6 @@
 package com.tenblr.bhargav.tenblr.UI.Activities;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.tenblr.bhargav.tenblr.API.TumblrInterface;
@@ -41,6 +41,7 @@ public class UserDashActivity extends AppCompatActivity {
     Button btnLogin;
     FrameLayout blogView;
 
+    ImageView ivLogout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,26 +49,25 @@ public class UserDashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_dash);
         pref = new PrefUtil(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar_user_dash);
-        toolbar.setTitleTextColor(Color.parseColor("#ffffff"));
         setSupportActionBar(toolbar);
         loginSuccess = getIntent().getBooleanExtra("login",false);
         blogView = (FrameLayout) findViewById(R.id.dash_frag_container);
         viewLogin = (LinearLayout) findViewById(R.id.view_login_cont);
         btnLogin = (Button) viewLogin.findViewById(R.id.btn_login);
-
+        ivLogout = (ImageView) toolbar.findViewById(R.id.iv_logout);
         if(!loginSuccess){
             getSupportActionBar().setTitle("Login to Continue");
             viewLogin.setVisibility(View.VISIBLE);
             blogView.setVisibility(View.GONE);
+            ivLogout.setVisibility(View.GONE);
         }
         else{
             loadBlogList();
             viewLogin.setVisibility(View.GONE);
             blogView.setVisibility(View.VISIBLE);
+            ivLogout.setVisibility(View.VISIBLE);
             api = TumblrService.getClient(UserDashActivity.this).create(TumblrInterface.class);
         }
-
-
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +75,16 @@ public class UserDashActivity extends AppCompatActivity {
                 Intent in = new Intent(UserDashActivity.this,OAuthLoginActivity.class);
                 startActivity(in);
                 finish();
+            }
+        });
+
+        ivLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pref.clearAllSharedPreferences();
+                Intent in = new Intent(UserDashActivity.this,SplashActivity.class);
+                in.putExtra("logout",true);
+                startActivity(in);
             }
         });
     }
@@ -120,7 +130,6 @@ public class UserDashActivity extends AppCompatActivity {
                 comm.postDelete(false);
             }
         });
-
     }
 
 }

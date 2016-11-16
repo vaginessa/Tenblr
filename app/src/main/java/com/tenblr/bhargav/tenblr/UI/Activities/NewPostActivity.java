@@ -31,18 +31,14 @@ public class NewPostActivity extends AppCompatActivity implements PostStateCommu
     TextView toolbarPost;
     String blogName;
     TumblrInterface api;
-
     EditText postTitle;
     EditText postBody;
     EditText postTags;
-
     boolean isEdit = false;
-
     String postId;
-
     ImageView ivPostState;
-
     String postState = "published";
+    TextView toolbarTitle;
 
 
     @Override
@@ -51,6 +47,7 @@ public class NewPostActivity extends AppCompatActivity implements PostStateCommu
         setContentView(R.layout.activity_new_post);
         toolbar = (Toolbar) findViewById(R.id.toolbar_new_post);
         toolbarPost = (TextView) toolbar.findViewById(R.id.tv_make_post);
+        toolbarTitle = (TextView) toolbar.findViewById(R.id.new_post_toolbar_title);
         blogName = getIntent().getStringExtra("blog");
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Create New Post");
@@ -58,6 +55,7 @@ public class NewPostActivity extends AppCompatActivity implements PostStateCommu
         initViews();
         bindViews();
         isEdit = getIntent().getBooleanExtra("edit",false);
+        toolbarTitle.setText(" Create New Post");
         if(isEdit){
             postBody.setText(getIntent().getStringExtra("body"));
             postTitle.setText(getIntent().getStringExtra("title"));
@@ -66,7 +64,9 @@ public class NewPostActivity extends AppCompatActivity implements PostStateCommu
             int size = tags.length();
             postTags.setText(tags.substring(1,size-1));
             toolbarPost.setText("Update");
+            toolbarTitle.setText(" Edit Post");
         }
+
 
 
 
@@ -80,6 +80,7 @@ public class NewPostActivity extends AppCompatActivity implements PostStateCommu
     }
 
     private void bindViews() {
+
         toolbarPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

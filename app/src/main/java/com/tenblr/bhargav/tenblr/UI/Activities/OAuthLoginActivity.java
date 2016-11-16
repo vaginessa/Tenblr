@@ -39,6 +39,7 @@ public class OAuthLoginActivity extends AppCompatActivity {
     PrefUtil pref;
     private OAuth10aService service;
     private OAuth1RequestToken reqToken;
+    boolean isLogout = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,16 +48,19 @@ public class OAuthLoginActivity extends AppCompatActivity {
         pref = new PrefUtil(this);
         webView = (WebView) findViewById(R.id.login_webview);
         new TumblrOAuth().execute();
-
+        if(getIntent()!=null)
+            isLogout = getIntent().getBooleanExtra("logout",false);
     }
 
     public void loadAuthWebView(String authUrl)
     {
+        if(isLogout){
+            webView.clearCache(true);
+            webView.clearHistory();
+            webView.clearFormData();
+            clearCookies(this);
+        }
 
- /*       webView.clearCache(true);
-        webView.clearHistory();
-        webView.clearFormData();
-        clearCookies(this);*/
         if(oAuthVerifier ==null && oAuthToken ==null)
         {
             webView.getSettings().setJavaScriptEnabled(true);

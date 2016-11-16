@@ -20,7 +20,12 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        boolean logout = false;
 
+        if(getIntent()!=null)
+            logout = getIntent().getBooleanExtra("logout",false);
+
+        final boolean finalLogout = logout;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -35,6 +40,7 @@ public class SplashActivity extends AppCompatActivity {
                 else
                 {
                     Intent in = new Intent(SplashActivity.this,OAuthLoginActivity.class);
+                    in.putExtra("logout", finalLogout);
                     startActivity(in);
                     finish();
                 }

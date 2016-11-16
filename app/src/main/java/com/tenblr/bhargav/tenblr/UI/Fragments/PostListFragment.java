@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tenblr.bhargav.tenblr.API.TumblrInterface;
@@ -47,6 +48,7 @@ public class PostListFragment extends Fragment implements PostDashCommunicator {
     FloatingActionButton addPost;
     LinearLayout emptyView;
     EndlessRecyclerViewScrollListener scrollListener;
+    private TextView toolbarTitle;
 
 
     public static PostListFragment newInstance(String blogName)
@@ -71,7 +73,9 @@ public class PostListFragment extends Fragment implements PostDashCommunicator {
         if(getArguments()!=null)
             blogName = getArguments().getString("blog");
 
-        ((UserDashActivity)getActivity()).getSupportActionBar().setTitle(blogName+":Blog Posts");
+        toolbarTitle = (TextView) ((UserDashActivity)getActivity()).findViewById(R.id.toolbar_title);
+        toolbarTitle.setText(blogName+" : Text Posts ");
+
         initViews();
         bindViews();
         getPostData(blogName,0);

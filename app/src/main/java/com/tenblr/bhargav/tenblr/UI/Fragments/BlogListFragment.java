@@ -43,6 +43,7 @@ public class BlogListFragment extends Fragment {
 
     TextView welcomeMessage;
     LinearLayout emptyView;
+    TextView toolbarTitle;
 
 
     @Override
@@ -55,7 +56,8 @@ public class BlogListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_blog_list,container,false);
-        ((UserDashActivity)getActivity()).getSupportActionBar().setTitle("My Blogs");
+        toolbarTitle = (TextView) ((UserDashActivity)getActivity()).findViewById(R.id.toolbar_title);
+        toolbarTitle.setText("My Blogs");
         initViews();
         bindViews();
         getUserData();

@@ -14,7 +14,7 @@
           android:id="@id/radio_post_now"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Public Now"/>
+          android:text="Publish Now"/>
         <RadioButton
           android:id="@+id/radio_draft"
           android:layout_width="wrap_content"

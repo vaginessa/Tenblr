@@ -8,13 +8,40 @@
         android:id="@+id/toolbar_user_dash"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        />
+        android:background="@color/colorPrimary">
+
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:gravity="end"
+            android:layout_marginRight="15dp">
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textAlignment="textStart"
+                android:layout_weight="0.8"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:text="My Blogs"/>
+
+            <ImageView
+                android:id="@+id/iv_logout"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:src="@mipmap/logout"
+                />
+        </LinearLayout>
+    </android.support.v7.widget.Toolbar>
 
     <FrameLayout
         android:id="@+id/dash_frag_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
+        android:layout_height="match_parent">
+
+    </FrameLayout>
 
     <include
         android:id="@+id/view_login_cont"
