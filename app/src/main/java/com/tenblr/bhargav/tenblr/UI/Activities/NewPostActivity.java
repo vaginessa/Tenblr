@@ -1,7 +1,10 @@
 package com.tenblr.bhargav.tenblr.UI.Activities;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -39,21 +42,30 @@ public class NewPostActivity extends AppCompatActivity implements PostStateCommu
     ImageView ivPostState;
     String postState = "published";
     TextView toolbarTitle;
-
+    CoordinatorLayout newPostLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
+        initViews();
+        bindViews();
+        api = TumblrService.getClient(NewPostActivity.this).create(TumblrInterface.class);
+    }
+
+    private void initViews() {
         toolbar = (Toolbar) findViewById(R.id.toolbar_new_post);
         toolbarPost = (TextView) toolbar.findViewById(R.id.tv_make_post);
         toolbarTitle = (TextView) toolbar.findViewById(R.id.new_post_toolbar_title);
         blogName = getIntent().getStringExtra("blog");
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Create New Post");
-        api = TumblrService.getClient(NewPostActivity.this).create(TumblrInterface.class);
-        initViews();
-        bindViews();
+        postTitle = (EditText) findViewById(R.id.et_post_title);
+        postBody = (EditText) findViewById(R.id.et_post_body);
+        postTags = (EditText) findViewById(R.id.et_post_tags);
+        ivPostState = (ImageView) findViewById(R.id.iv_post_state);
+        newPostLayout = (CoordinatorLayout) findViewById(R.id.new_post_coordinator);
+
         isEdit = getIntent().getBooleanExtra("edit",false);
         toolbarTitle.setText(" Create New Post");
         if(isEdit){
@@ -65,18 +77,8 @@ public class NewPostActivity extends AppCompatActivity implements PostStateCommu
             postTags.setText(tags.substring(1,size-1));
             toolbarPost.setText("Update");
             toolbarTitle.setText(" Edit Post");
+            ivPostState.setVisibility(View.GONE);
         }
-
-
-
-
-    }
-
-    private void initViews() {
-        postTitle = (EditText) findViewById(R.id.et_post_title);
-        postBody = (EditText) findViewById(R.id.et_post_body);
-        postTags = (EditText) findViewById(R.id.et_post_tags);
-        ivPostState = (ImageView) findViewById(R.id.iv_post_state);
     }
 
     private void bindViews() {
@@ -87,14 +89,21 @@ public class NewPostActivity extends AppCompatActivity implements PostStateCommu
                 if(!isEdit){
                     if(!postTitle.getText().toString().equals("")||!postBody.getText().toString().equals(""))
                         makePost();
-                    else
-                        Toast.makeText(NewPostActivity.this, "Enter either Title or Body to Post!", Toast.LENGTH_SHORT).show();
+                    else{
+                        Snackbar snackbar = Snackbar
+                                .make(newPostLayout,"Enter either Title or Body to Post!", Snackbar.LENGTH_LONG);
+                        snackbar.show();
+                    }
+
                 }
                 else{
                     if(!postTitle.getText().toString().equals("")||!postBody.getText().toString().equals(""))
                         editPost();
-                    else
-                        Toast.makeText(NewPostActivity.this, "Enter either Title or Body to Post!", Toast.LENGTH_SHORT).show();
+                    else{
+                        Snackbar snackbar = Snackbar
+                                .make(newPostLayout,"Enter either Title or Body to Post!", Snackbar.LENGTH_LONG);
+                        snackbar.show();
+                    }
                 }
 
             }
@@ -110,26 +119,27 @@ public class NewPostActivity extends AppCompatActivity implements PostStateCommu
 
     public void makePost()
     {
-     Call<DeleteResponse> call = api.createPost(blogName,"text",postState,postTags.getText().equals("")?null:(postTags.getText().toString()),postTitle.getText().equals("")?null:postTitle.getText().toString(),postBody.getText().equals("")?null:postBody.getText().toString());
-//        Call<DeleteResponse> call = api.createPost(blogName,"text",null,null,"postAttempt","body");
-
+        Call<DeleteResponse> call = api.createPost(blogName,"text",postState,postTags.getText().equals("")?null:(postTags.getText().toString()),postTitle.getText().equals("")?null:postTitle.getText().toString(),postBody.getText().equals("")?null:postBody.getText().toString());
         call.enqueue(new Callback<DeleteResponse>() {
             @Override
             public void onResponse(Call<DeleteResponse> call, Response<DeleteResponse> response) {
                 if(response.code()==201){
-                    if(response.body().getMeta().getStatus()==201)
-                        Toast.makeText(NewPostActivity.this,postState+"- Successful", Toast.LENGTH_SHORT).show();
-                    finish();
+                    if(response.body().getMeta().getStatus()==201){
+                        setResult(Activity.RESULT_OK);
+                        finish();
+                    }
                 }
                 else {
-                    Toast.makeText(NewPostActivity.this, "Error creating Post", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NewPostActivity.this, "Error Creating Post", Toast.LENGTH_SHORT).show();
+                    setResult(Activity.RESULT_CANCELED);
                 }
 
             }
 
             @Override
             public void onFailure(Call<DeleteResponse> call, Throwable t) {
-                Toast.makeText(NewPostActivity.this, "Error creating Post", Toast.LENGTH_SHORT).show();
+                Toast.makeText(NewPostActivity.this, "Error Creating Post", Toast.LENGTH_SHORT).show();
+                setResult(Activity.RESULT_CANCELED);
             }
         });
 
@@ -137,25 +147,27 @@ public class NewPostActivity extends AppCompatActivity implements PostStateCommu
 
     public void editPost()
     {
-        Call<DeleteResponse> call = api.editPost(blogName,postId,"text",postState,postTags.getText().equals("")?null:(postTags.getText().toString()),postTitle.getText().equals("")?null:postTitle.getText().toString(),postBody.getText().equals("")?null:postBody.getText().toString());
-
+        Call<DeleteResponse> call = api.editPost(blogName,postId,"text",postTags.getText().equals("")?null:(postTags.getText().toString()),postTitle.getText().equals("")?null:postTitle.getText().toString(),postBody.getText().equals("")?null:postBody.getText().toString());
         call.enqueue(new Callback<DeleteResponse>() {
             @Override
             public void onResponse(Call<DeleteResponse> call, Response<DeleteResponse> response) {
                 if(response.code()==200){
-                    if(response.body().getMeta().getStatus()==200)
-                        Toast.makeText(NewPostActivity.this, postState+"-Successful", Toast.LENGTH_SHORT).show();
-                    finish();
+                    if(response.body().getMeta().getStatus()==200){
+                        setResult(Activity.RESULT_OK);
+                        finish();
+                    }
                 }
                 else {
-                    Toast.makeText(NewPostActivity.this, "Error Updating Post", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NewPostActivity.this, "Edit Failed", Toast.LENGTH_SHORT).show();
+                    setResult(Activity.RESULT_CANCELED);
                 }
 
             }
 
             @Override
             public void onFailure(Call<DeleteResponse> call, Throwable t) {
-                Toast.makeText(NewPostActivity.this, "Error Updating Post", Toast.LENGTH_SHORT).show();
+                Toast.makeText(NewPostActivity.this, "Edit Failed", Toast.LENGTH_SHORT).show();
+                setResult(Activity.RESULT_CANCELED);
             }
         });
     }

@@ -2,6 +2,7 @@ package com.tenblr.bhargav.tenblr.API;
 
 import android.content.Context;
 
+import com.tenblr.bhargav.tenblr.BuildConfig;
 import com.tenblr.bhargav.tenblr.Utils.Constants;
 import com.tenblr.bhargav.tenblr.Utils.PrefUtil;
 
@@ -30,7 +31,7 @@ public class TumblrService {
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-            OkHttpOAuthConsumer consumer = new OkHttpOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
+            OkHttpOAuthConsumer consumer = new OkHttpOAuthConsumer(BuildConfig.CONSUMER_KEY,BuildConfig.CONSUMER_SECRET);
             consumer.setTokenWithSecret(new PrefUtil(context).getStringPref(Constants.OAUTH_TOKEN,""),
                     new PrefUtil(context).getStringPref(Constants.OAUTH_SECRET,""));
 

@@ -2,12 +2,13 @@ package com.tenblr.bhargav.tenblr.UI.Activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
@@ -19,6 +20,7 @@ import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.oauth.OAuth10aService;
+import com.tenblr.bhargav.tenblr.BuildConfig;
 import com.tenblr.bhargav.tenblr.R;
 import com.tenblr.bhargav.tenblr.Utils.Constants;
 import com.tenblr.bhargav.tenblr.Utils.PrefUtil;
@@ -30,12 +32,9 @@ public class OAuthLoginActivity extends AppCompatActivity {
 
     WebView webView;
     private String oAuthUrl;
-
     private String oAuthToken = null;
     private String oAuthVerifier = null;
-
     private String callbackUrl = "https://www.tumblr.com/dashboard";
-
     PrefUtil pref;
     private OAuth10aService service;
     private OAuth1RequestToken reqToken;
@@ -47,7 +46,16 @@ public class OAuthLoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_oauth_login);
         pref = new PrefUtil(this);
         webView = (WebView) findViewById(R.id.login_webview);
-        new TumblrOAuth().execute();
+        if(isNetworkStatusAvialable(this))
+            new TumblrOAuth().execute();
+        else{
+            Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+            Intent in = new Intent(OAuthLoginActivity.this,UserDashActivity.class);
+            in.putExtra("login",false);
+            startActivity(in);
+            finish();
+        }
+
         if(getIntent()!=null)
             isLogout = getIntent().getBooleanExtra("logout",false);
     }
@@ -61,12 +69,8 @@ public class OAuthLoginActivity extends AppCompatActivity {
             clearCookies(this);
         }
 
-        if(oAuthVerifier ==null && oAuthToken ==null)
-        {
+        if(oAuthVerifier ==null && oAuthToken ==null) {
             webView.getSettings().setJavaScriptEnabled(true);
-
-
-
             webView.setWebViewClient(new WebViewClient(){
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -90,18 +94,14 @@ public class OAuthLoginActivity extends AppCompatActivity {
                     return super.shouldOverrideUrlLoading(view, url);
                 }
             });
-
             webView.loadUrl(authUrl);
         }
-        else
-        {
+        else {
             Toast.makeText(this, "Logged In", Toast.LENGTH_SHORT).show();
         }
-
     }
 
-    public void storeCredentials(String accessToken,String accessSecret)
-    {
+    public void storeCredentials(String accessToken,String accessSecret) {
         pref.setStringPref(Constants.OAUTH_TOKEN, accessToken);
         pref.setStringPref(Constants.OAUTH_SECRET, accessSecret);
         pref.setBooleanPref(Constants.LOGGED_IN,true);
@@ -109,17 +109,14 @@ public class OAuthLoginActivity extends AppCompatActivity {
         pref.setBooleanPref(Constants.LOGGED_IN,true);
     }
 
-    @SuppressWarnings("deprecation")
-    public static void clearCookies(Context context)
-    {
+
+    public static void clearCookies(Context context) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-
             CookieManager.getInstance().removeAllCookies(null);
             CookieManager.getInstance().flush();
-        } else
-        {
-
+        }
+        else {
             CookieSyncManager cookieSyncMngr=CookieSyncManager.createInstance(context);
             cookieSyncMngr.startSync();
             CookieManager cookieManager=CookieManager.getInstance();
@@ -136,8 +133,7 @@ public class OAuthLoginActivity extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             try {
                 Token accesstoken = service.getAccessToken(reqToken,oAuthVerifier);
-                Log.v("Access",accesstoken.getRawResponse());
-                storeCredentials(accesstoken.getParameter("oauth_token"),accesstoken.getParameter("oauth_token_secret"));
+                storeCredentials(accesstoken.getParameter(Constants.OAUTH_TOKEN),accesstoken.getParameter(Constants.OAUTH_SECRET));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -161,18 +157,13 @@ public class OAuthLoginActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-
-                service = new ServiceBuilder().apiKey(Constants.CONSUMER_KEY)
-                        .apiSecret(Constants.CONSUMER_SECRET).callback(callbackUrl)
+                service = new ServiceBuilder().apiKey(BuildConfig.CONSUMER_KEY)
+                        .apiSecret(BuildConfig.CONSUMER_SECRET).callback(callbackUrl)
                         .build(TumblrApi.instance());
-
                 reqToken = service.getRequestToken();
-
                 oAuthUrl = service.getAuthorizationUrl(reqToken);
-
             } catch (Exception e) {
                 this.exception = e;
-
                 return null;
             }
             return null;
@@ -181,5 +172,17 @@ public class OAuthLoginActivity extends AppCompatActivity {
         protected void onPostExecute(Void d) {
             loadAuthWebView(oAuthUrl);
         }
+    }
+
+    public static boolean isNetworkStatusAvialable (Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null)
+        {
+            NetworkInfo netInfos = connectivityManager.getActiveNetworkInfo();
+            if(netInfos != null)
+                if(netInfos.isConnected())
+                    return true;
+        }
+        return false;
     }
 }

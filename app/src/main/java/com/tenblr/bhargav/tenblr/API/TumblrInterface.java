@@ -36,5 +36,5 @@ public interface TumblrInterface {
 
     @FormUrlEncoded
     @POST("blog/{blogname}/post/edit")
-    Call<DeleteResponse> editPost(@Path("blogname") String blogName,@Field("id") String postId,@Field("type") String postType, @Field("state") String state, @Field("tags") String tags, @Field("title") String postTitle, @Field("body") String postBody);
+    Call<DeleteResponse> editPost(@Path("blogname") String blogName,@Field("id") String postId,@Field("type") String postType,@Field("tags") String tags, @Field("title") String postTitle, @Field("body") String postBody);
 }

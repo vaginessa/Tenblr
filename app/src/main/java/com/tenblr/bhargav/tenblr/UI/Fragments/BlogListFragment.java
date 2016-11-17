@@ -40,7 +40,6 @@ public class BlogListFragment extends Fragment {
     ArrayList<Blog> blogs = new ArrayList<>();
     BlogListAdapter adapter;
     User user = new User();
-
     TextView welcomeMessage;
     LinearLayout emptyView;
     TextView toolbarTitle;
@@ -71,12 +70,12 @@ public class BlogListFragment extends Fragment {
         call.enqueue(new Callback<UserInfoResponse>() {
             @Override
             public void onResponse(Call<UserInfoResponse> call, Response<UserInfoResponse> response) {
-                if(response.code()==200)
-                {
+                if(response.code()==200) {
                     user = response.body().getResponse().getUser();
                     blogs = user.getBlogs();
                     adapter.updateData(blogs);
                     welcomeMessage.setText("Welcome to Tenblr \n"+user.getName());
+
                     if(blogs.size()==0){
                         emptyView.setVisibility(View.VISIBLE);
                         rvBlogList.setVisibility(View.GONE);

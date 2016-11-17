@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/new_post_coordinator"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,12 +14,10 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         >
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >
-
             <TextView
                 android:id="@+id/new_post_toolbar_title"
                 android:layout_width="wrap_content"
@@ -72,7 +75,7 @@
             android:id="@+id/et_post_tags"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Post Tags Seperated by Commas"
+            android:hint="Post Tags Separated by Commas"
             android:drawableLeft="@mipmap/hashtag"
             android:drawablePadding="10dp"
             android:background="@null"
@@ -89,8 +92,5 @@
 
     </LinearLayout>
 
-
-
-
-
 </LinearLayout>
+    </android.support.design.widget.CoordinatorLayout>

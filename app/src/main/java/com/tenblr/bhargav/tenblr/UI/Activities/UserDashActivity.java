@@ -40,13 +40,19 @@ public class UserDashActivity extends AppCompatActivity {
     LinearLayout viewLogin;
     Button btnLogin;
     FrameLayout blogView;
-
     ImageView ivLogout;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_dash);
+        initViews();
+        bindViews();
+    }
+
+    public void initViews(){
+
         pref = new PrefUtil(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar_user_dash);
         setSupportActionBar(toolbar);
@@ -55,6 +61,7 @@ public class UserDashActivity extends AppCompatActivity {
         viewLogin = (LinearLayout) findViewById(R.id.view_login_cont);
         btnLogin = (Button) viewLogin.findViewById(R.id.btn_login);
         ivLogout = (ImageView) toolbar.findViewById(R.id.iv_logout);
+
         if(!loginSuccess){
             getSupportActionBar().setTitle("Login to Continue");
             viewLogin.setVisibility(View.VISIBLE);
@@ -68,7 +75,9 @@ public class UserDashActivity extends AppCompatActivity {
             ivLogout.setVisibility(View.VISIBLE);
             api = TumblrService.getClient(UserDashActivity.this).create(TumblrInterface.class);
         }
+    }
 
+    public void bindViews(){
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

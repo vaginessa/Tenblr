@@ -15,6 +15,8 @@ import com.tenblr.bhargav.tenblr.Model.BlogInfo.Post;
 import com.tenblr.bhargav.tenblr.R;
 import com.tenblr.bhargav.tenblr.UI.Activities.NewPostActivity;
 import com.tenblr.bhargav.tenblr.UI.Activities.UserDashActivity;
+import com.tenblr.bhargav.tenblr.UI.Fragments.PostListFragment;
+import com.tenblr.bhargav.tenblr.Utils.Constants;
 
 import java.util.ArrayList;
 
@@ -29,12 +31,14 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
     ArrayList<Post> posts = new ArrayList<>();
     UserDashActivity act;
     TagsAdapter adapter;
+    PostListFragment frag;
 
     int deletePos = -1;
-    public PostListAdapter(ArrayList<Post> data, Activity activity) {
+    public PostListAdapter(ArrayList<Post> data, Activity activity, PostListFragment postListFragment) {
 
         posts = data;
         act = (UserDashActivity) activity;
+        frag = postListFragment;
     }
 
     @Override
@@ -134,7 +138,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
                 public void onClick(View view) {
                     Intent sendIntent = new Intent();
                     sendIntent.setAction(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Check out thius post: "+posts.get(getAdapterPosition()).getPostUrl());
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Check out this post: "+posts.get(getAdapterPosition()).getPostUrl());
                     sendIntent.setType("text/plain");
                     act.startActivity(sendIntent);
                 }
@@ -150,7 +154,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
                     in.putExtra("title",posts.get(getAdapterPosition()).getTitle().toString());
                     in.putExtra("body",posts.get(getAdapterPosition()).getBody().toString());
                     in.putExtra("tags",posts.get(getAdapterPosition()).getTags().toString());
-                    act.startActivity(in);
+                    frag.startActivityForResult(in, Constants.NEW_EDIT_POST);
                 }
             });
         }
@@ -160,4 +164,5 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
         posts = data;
         notifyDataSetChanged();
     }
+
 }

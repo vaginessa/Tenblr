@@ -1,5 +1,6 @@
 package com.tenblr.bhargav.tenblr.UI.Fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,6 +25,7 @@ import com.tenblr.bhargav.tenblr.Model.BlogInfo.Post;
 import com.tenblr.bhargav.tenblr.R;
 import com.tenblr.bhargav.tenblr.UI.Activities.NewPostActivity;
 import com.tenblr.bhargav.tenblr.UI.Activities.UserDashActivity;
+import com.tenblr.bhargav.tenblr.Utils.Constants;
 
 import java.util.ArrayList;
 
@@ -44,11 +46,11 @@ public class PostListFragment extends Fragment implements PostDashCommunicator {
     TumblrInterface api;
     PostListAdapter adapter;
     ArrayList<Post> posts = new ArrayList<>();
-    boolean deleted = false;
     FloatingActionButton addPost;
     LinearLayout emptyView;
     EndlessRecyclerViewScrollListener scrollListener;
     private TextView toolbarTitle;
+
 
 
     public static PostListFragment newInstance(String blogName)
@@ -86,7 +88,7 @@ public class PostListFragment extends Fragment implements PostDashCommunicator {
     private void initViews() {
         rvPostList = (RecyclerView) rootView.findViewById(R.id.rv_post_list);
         layoutManager = new LinearLayoutManager(getActivity());
-        adapter = new PostListAdapter(posts,getActivity());
+        adapter = new PostListAdapter(posts,getActivity(),this);
         addPost = (FloatingActionButton) rootView.findViewById(R.id.fab_add_post);
         emptyView = (LinearLayout) rootView.findViewById(R.id.post_empty);
         scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
@@ -107,7 +109,7 @@ public class PostListFragment extends Fragment implements PostDashCommunicator {
                 Intent in = new Intent(getActivity(), NewPostActivity.class);
                 in.putExtra("blog",blogName);
                 in.putExtra("edit",false);
-                startActivity(in);
+                startActivityForResult(in, Constants.NEW_EDIT_POST);
             }
         });
 
@@ -145,5 +147,15 @@ public class PostListFragment extends Fragment implements PostDashCommunicator {
     @Override
     public void postDelete(boolean deleted) {
         adapter.deletePost(deleted);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == Constants.NEW_EDIT_POST&& resultCode == Activity.RESULT_OK){
+            posts.clear();
+            getPostData(blogName,0);
+        }
     }
 }

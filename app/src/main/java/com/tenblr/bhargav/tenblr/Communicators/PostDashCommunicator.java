@@ -6,4 +6,5 @@ package com.tenblr.bhargav.tenblr.Communicators;
 
 public interface PostDashCommunicator {
     public void postDelete(boolean deleted);
+
 }
