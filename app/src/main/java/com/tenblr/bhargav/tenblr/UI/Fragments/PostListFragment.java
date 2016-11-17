@@ -123,15 +123,17 @@ public class PostListFragment extends Fragment implements PostDashCommunicator {
         call.enqueue(new Callback<BlogInfoResponse>() {
             @Override
             public void onResponse(Call<BlogInfoResponse> call, Response<BlogInfoResponse> response) {
-                posts.addAll(response.body().getResponse().getPosts());
-                if(posts.size()==0){
-                    emptyView.setVisibility(View.VISIBLE);
-                    rvPostList.setVisibility(View.GONE);
-                }
-                else{
-                    emptyView.setVisibility(View.GONE);
-                    rvPostList.setVisibility(View.VISIBLE);
-                    adapter.updateData(posts);
+                if(response.code()==200){
+                    posts.addAll(response.body().getResponse().getPosts());
+                    if(posts.size()==0){
+                        emptyView.setVisibility(View.VISIBLE);
+                        rvPostList.setVisibility(View.GONE);
+                    }
+                    else{
+                        emptyView.setVisibility(View.GONE);
+                        rvPostList.setVisibility(View.VISIBLE);
+                        adapter.updateData(posts);
+                    }
                 }
             }
 
