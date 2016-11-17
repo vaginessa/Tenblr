@@ -53,7 +53,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.10"
         android:hint="Post Title"
-        android:background="@null"/>
+        android:background="@null"
+        android:singleLine="true"/>
 
     <EditText
         android:id="@+id/et_post_body"
@@ -80,7 +81,8 @@
             android:drawablePadding="10dp"
             android:background="@null"
             android:layout_weight="0.70"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:singleLine="true"/>
 
         <ImageView
             android:id="@+id/iv_post_state"
